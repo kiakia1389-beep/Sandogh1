@@ -1,0 +1,2593 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>صندوق خانوادگی</title>
+<meta name="theme-color" content="#0e5f52">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f2ea;--surface:#fff;--surface2:#faf8f3;--ink:#1b2a29;--muted:#6b7773;--line:#e6e1d5;
+  --pri:#0e5f52;--pri-ink:#fff;--pri-soft:#dff0ea;--gold:#c28a2c;--gold-soft:#f6ead2;
+  --ok:#1c7a4b;--ok-soft:#dcf1e5;--bad:#b4372b;--bad-soft:#f9e1de;--warn:#a96a0b;--warn-soft:#fbeed4;
+  --shadow:0 1px 2px rgba(20,40,35,.06),0 6px 18px rgba(20,40,35,.06);--r:16px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0f1816;--surface:#16231f;--surface2:#1b2a26;--ink:#e8efec;--muted:#95a6a0;--line:#26372f;
+  --pri:#2fa78f;--pri-ink:#04201a;--pri-soft:#173a32;--gold:#e0b052;--gold-soft:#3a3016;
+  --ok:#52c98a;--ok-soft:#173a29;--bad:#ff8a7d;--bad-soft:#40201c;--warn:#f0b455;--warn-soft:#3b2d12;
+  --shadow:0 1px 2px rgba(0,0,0,.4);}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Vazirmatn",Tahoma,"Noto Sans Arabic",system-ui,sans-serif;line-height:1.6;
+  padding-bottom:calc(76px + env(safe-area-inset-bottom));min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+.boot{padding:40vh 0;text-align:center;color:var(--muted)}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 0 8px}
+.top .wrap{display:flex;align-items:center;gap:10px}
+.top h1{font-size:1.05rem;margin:0;flex:1;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.back{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;font-size:1.1rem}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer}
+.sync{font-size:.72rem;padding:3px 9px;border-radius:99px;background:var(--surface);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.sync i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-inline-end:5px}
+.sync.off i{background:var(--warn)}.sync.pend i{background:var(--gold)}.sync.demo i{background:var(--pri)}
+/* cards */
+main.wrap{padding-top:6px;padding-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:12px}
+.card h2{font-size:.95rem;margin:0 0 10px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card h2 small{font-weight:400;color:var(--muted);font-size:.78rem}
+.hero{background:linear-gradient(145deg,#0e5f52 0%,#0a4a40 60%,#083a33 100%);color:#fff;border:0;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset-inline-start:-40px;top:-40px;width:160px;height:160px;border-radius:50%;border:26px solid rgba(255,255,255,.06)}
+.hero .lbl{font-size:.82rem;opacity:.8}
+.hero .big{font-size:2.1rem;font-weight:800;letter-spacing:-.5px;line-height:1.25}
+.hero .big small{font-size:.9rem;font-weight:500;opacity:.8;margin-inline-start:6px}
+.hero .sub{display:flex;gap:18px;margin-top:10px;font-size:.82rem;flex-wrap:wrap}
+.hero .sub b{display:block;font-size:1rem;color:#f3d894}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+.kpi .l{font-size:.76rem;color:var(--muted)}
+.kpi .v{font-size:1.15rem;font-weight:800;margin-top:2px}
+.kpi .v small{font-size:.7rem;font-weight:400;color:var(--muted)}
+.kpi.bad .v{color:var(--bad)}.kpi.ok .v{color:var(--ok)}.kpi.gold .v{color:var(--gold)}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}.small{font-size:.8rem}
+/* chips */
+.chip{display:inline-block;font-size:.72rem;padding:2px 10px;border-radius:99px;font-weight:500;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.mut{background:var(--surface2);color:var(--muted);border:1px solid var(--line)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.fchip{border:1px solid var(--line);background:var(--surface);padding:5px 14px;border-radius:99px;font-size:.82rem;cursor:pointer}
+.fchip.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+/* lists */
+.list{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.av{width:40px;height:40px;border-radius:50%;background:var(--pri-soft);color:var(--pri);display:grid;place-items:center;font-weight:800;flex:none}
+.av.bad{background:var(--bad-soft);color:var(--bad)}.av.gold{background:var(--gold-soft);color:var(--gold)}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{font-size:.78rem;color:var(--muted)}
+.row .amt{font-weight:700;text-align:end;white-space:nowrap}
+.row .amt.pos{color:var(--ok)}.row .amt.neg{color:var(--bad)}
+.empty{text-align:center;color:var(--muted);padding:26px 8px}
+/* progress */
+.bar{height:9px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--pri);border-radius:99px}
+.bar.gold>i{background:var(--gold)}
+/* form controls */
+.search{width:100%;padding:11px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);margin-bottom:10px}
+label.f{display:block;margin-bottom:12px;font-size:.82rem;color:var(--muted)}
+label.f>span{display:block;margin-bottom:4px}
+.in,select.in,input.in{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:1rem}
+.in:focus,.search:focus{outline:2px solid var(--pri);outline-offset:1px}
+.in.ltr{direction:ltr;text-align:right}
+.r3{display:grid;grid-template-columns:1.2fr 1.4fr 1fr;gap:8px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:0;border-radius:12px;padding:11px 18px;background:var(--pri);color:var(--pri-ink);font-weight:700;cursor:pointer;font-size:.95rem}
+.btn.sec{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn.bad{background:var(--bad);color:#fff}
+.btn.sm{padding:6px 12px;font-size:.8rem;border-radius:10px}
+.btn.block{display:block;width:100%}
+.btn:disabled{opacity:.5}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg button{flex:1 1 auto;border:1px solid var(--line);background:var(--surface);padding:8px 10px;border-radius:12px;font-size:.82rem;cursor:pointer;white-space:nowrap}
+.seg button.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri);font-weight:700}
+.note{padding:10px 12px;border-radius:12px;font-size:.82rem;margin-bottom:12px;background:var(--surface2);border:1px solid var(--line)}
+.note.warn{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
+.note.bad{background:var(--bad-soft);border-color:transparent;color:var(--bad)}
+.note.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
+/* tiles in member page */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tile{background:var(--surface2);border-radius:12px;padding:9px 10px;text-align:center;border:1px solid var(--line)}
+.tile b{display:block;font-size:.95rem}.tile span{font-size:.7rem;color:var(--muted)}
+.strip{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
+.strip div{aspect-ratio:1;border-radius:8px;display:grid;place-items:center;font-size:.62rem;background:var(--surface2);color:var(--muted);border:1px solid var(--line)}
+.strip .paid,.cell.paid{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.strip .unpaid,.cell.unpaid{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.strip .due,.cell.due{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.strip .partial,.cell.partial{background:var(--gold-soft);color:var(--gold);border-color:transparent}
+.strip .overdue{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+/* matrix */
+.scroll{overflow:auto;border-radius:12px;border:1px solid var(--line);max-height:70vh}
+table.mx{border-collapse:separate;border-spacing:0;font-size:.74rem;width:100%;min-width:640px}
+table.mx th,table.mx td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--line);background:var(--surface)}
+table.mx th{position:sticky;top:0;z-index:2;background:var(--surface2);font-weight:700}
+table.mx td:first-child,table.mx th:first-child{position:sticky;inset-inline-start:0;z-index:3;text-align:start;padding-inline:8px;min-width:96px;max-width:110px;background:var(--surface2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+table.mx .cell{font-weight:700}
+table.mx tfoot td{font-weight:800;background:var(--surface2)}
+table.t{width:100%;border-collapse:collapse;font-size:.82rem}
+table.t th{text-align:start;color:var(--muted);font-weight:500;padding:6px 4px;border-bottom:1px solid var(--line)}
+table.t td{padding:7px 4px;border-bottom:1px solid var(--line)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.72rem;color:var(--muted);margin:8px 0}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px;background:var(--c)}
+/* bottom nav + fab */
+.nav{position:fixed;bottom:0;inset-inline:0;background:var(--surface);border-top:1px solid var(--line);z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+.nav .wrap{display:flex;padding:0}
+.nav a{flex:1;text-align:center;padding:8px 2px 7px;font-size:.7rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+.nav a svg{width:22px;height:22px}
+.nav a.on{color:var(--pri);font-weight:700}
+.fab{position:fixed;inset-inline-start:18px;bottom:calc(86px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:18px;border:0;background:var(--gold);color:#fff;font-size:2rem;line-height:1;box-shadow:0 8px 22px rgba(0,0,0,.28);z-index:25;cursor:pointer}
+/* sheet */
+.backdrop{position:fixed;inset:0;background:rgba(10,20,18,.5);z-index:50;animation:fade .15s}
+.sheet{position:fixed;bottom:0;inset-inline:0;max-width:760px;margin:0 auto;background:var(--bg);z-index:51;border-radius:22px 22px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;animation:up .2s}
+.sheet h3{margin:0 0 12px;font-size:1.05rem}
+.sheet .grab{width:42px;height:4px;border-radius:9px;background:var(--line);margin:-6px auto 12px}
+@keyframes up{from{transform:translateY(30px);opacity:0}}@keyframes fade{from{opacity:0}}
+#toast{position:fixed;bottom:calc(92px + env(safe-area-inset-bottom));inset-inline:16px;margin:0 auto;max-width:420px;background:#17302b;color:#fff;padding:11px 16px;border-radius:14px;z-index:90;text-align:center;font-size:.88rem;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}
+#toast.show{opacity:1;transform:none}
+.login{max-width:380px;margin:12vh auto 0}
+.chart text{font-family:inherit;fill:var(--muted);font-size:9px}
+@media print{.top,.nav,.fab,.btns,.no-print{display:none!important}body{background:#fff;color:#000;padding:0}.card{box-shadow:none}.scroll{max-height:none;overflow:visible}}
+
+</style>
+</head>
+<body>
+<div id="app"><div class="boot">در حال بارگذاری…</div></div>
+<div id="sheet-root"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script type="module">
+const __jalali=(()=>{// تبدیل تاریخ میلادی/شمسی (الگوریتم jalaali) و ابزارهای نمایش
+const MONTHS=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const div=(a,b)=>~~(a/b), mod=(a,b)=>a-~~(a/b)*b;
+const breaks=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];
+function jalCal(jy,noLeap){
+  let bl=breaks.length,gy=jy+621,leapJ=-14,jp=breaks[0],jm,jump,leap,leapG,march,n,i;
+  for(i=1;i<bl;i++){jm=breaks[i];jump=jm-jp;if(jy<jm)break;leapJ+=div(jump,33)*8+div(mod(jump,33),4);jp=jm;}
+  n=jy-jp;leapJ+=div(n,33)*8+div(mod(n,33)+3,4);
+  if(mod(jump,33)===4&&jump-n===4)leapJ+=1;
+  leapG=div(gy,4)-div((div(gy,100)+1)*3,4)-150;march=20+leapJ-leapG;
+  if(noLeap)return{gy,march};
+  if(jump-n<6)n=n-jump+div(jump+4,33)*33;
+  leap=mod(mod(n+1,33)-1,4);if(leap===-1)leap=4;
+  return{leap,gy,march};
+}
+const g2d=(gy,gm,gd)=>{let d=div((gy+div(gm-8,6)+100100)*1461,4)+div(153*mod(gm+9,12)+2,5)+gd-34840408;return d-div(div(gy+100100+div(gm-8,6),100)*3,4)+752;};
+const d2g=jdn=>{let j=4*jdn+139361631;j+=div(div(4*jdn+183187720,146097)*3,4)*4-3908;const i=div(mod(j,1461),4)*5+308;const gd=div(mod(i,153),5)+1,gm=mod(div(i,153),12)+1,gy=div(j,1461)-100100+div(8-gm,6);return{gy,gm,gd};};
+const j2d=(jy,jm,jd)=>{const r=jalCal(jy,true);return g2d(r.gy,3,r.march)+(jm-1)*31-div(jm,7)*(jm-7)+jd-1;};
+const d2j=jdn=>{const gy=d2g(jdn).gy;let jy=gy-621;const r=jalCal(jy,false),f=g2d(gy,3,r.march);let k=jdn-f,jm,jd;
+  if(k>=0){if(k<=185){jm=1+div(k,31);jd=mod(k,31)+1;return{jy,jm,jd};}k-=186;}else{jy-=1;k+=179;if(r.leap===1)k+=1;}
+  jm=7+div(k,30);jd=mod(k,30)+1;return{jy,jm,jd};};
+const toJalali=(gy,gm,gd)=>d2j(g2d(gy,gm,gd));
+const toGregorian=(jy,jm,jd)=>d2g(j2d(jy,jm,jd));
+function jalaliToday(){const n=new Date();return toJalali(n.getFullYear(),n.getMonth()+1,n.getDate());}
+const isLeap=jy=>jalCal(jy,false).leap===0;
+const daysIn=(y,m)=>m<=6?31:m<=11?30:(isLeap(y)?30:29);
+const pad=n=>String(n).padStart(2,'0');
+const FA='۰۱۲۳۴۵۶۷۸۹';
+const fa=s=>String(s).replace(/\d/g,d=>FA[d]);
+const en=s=>String(s).replace(/[۰-۹]/g,d=>FA.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+const fmtDate=s=>s?fa(s):'';
+const ymd=(y,m,d)=>`${y}/${pad(m)}/${pad(d)}`;
+
+return {MONTHS,toJalali,toGregorian,jalaliToday,isLeap,daysIn,pad,fa,en,fmtDate,ymd};})();
+const {MONTHS,toJalali,toGregorian,jalaliToday,isLeap,daysIn,pad,fa,en,fmtDate,ymd}=__jalali;
+const __calc=(()=>{// منطق محاسبات صندوق — همه‌چیز از روی تراکنش‌ها محاسبه می‌شود (بدون ذخیره‌ی جداگانه‌ی مانده)
+const TYPES={share:'واریز سهم',repay:'بازپرداخت وام',loan:'پرداخت وام',income:'سایر درآمد',expense:'هزینه'};
+const mIdx=(y,m)=>y*12+(m-1);
+const fromIdx=i=>({y:Math.floor(i/12),m:i%12+1});
+const parts=s=>String(s||'').split('/').map(Number);
+const joinIdx=j=>{const p=parts(j);return p[0]&&p[1]?mIdx(p[0],p[1]):-1e9;};
+const shareIdx=t=>{const p=parts(t.date);return mIdx(t.forYear||p[0],t.forMonth||p[1]);};
+
+function compute({settings:s,members,tx},cur){
+  const curIdx=mIdx(cur.y,cur.m),startIdx=mIdx(s.startYear,s.startMonth);
+  const M=new Map(),monthly=new Map();
+  const mon=i=>{if(!monthly.has(i))monthly.set(i,{share:0,repay:0,loan:0,income:0,expense:0});return monthly.get(i);};
+  for(const m of members){
+    const amt=(s.baseShare||0)*(m.coef||1);
+    M.set(m.id,{...m,monthly:amt,paid:0,cells:new Map(),loans:[],active:m.status!=='غیرفعال'});
+  }
+  const F={shares:0,repay:0,loansOut:0,income:0,expense:0};
+  const loans=new Map();
+  const sorted=[...tx].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.createdAt||0)-(b.createdAt||0));
+  for(const t of sorted){
+    const p=parts(t.date),a=+t.amount||0,dIdx=mIdx(p[0],p[1]);
+    if(t.type==='share'){
+      F.shares+=a;const x=M.get(t.memberId);
+      if(x){x.paid+=a;const i=shareIdx(t);x.cells.set(i,(x.cells.get(i)||0)+a);}
+      mon(shareIdx(t)).share+=a;
+    }else if(t.type==='loan'){
+      F.loansOut+=a;mon(dIdx).loan+=a;
+      loans.set(t.loanNo,{no:t.loanNo,memberId:t.memberId,date:t.date,idx:dIdx,amount:a,n:t.installments||s.defaultInstallments||1,repaid:0,txId:t.id});
+    }else if(t.type==='repay'){F.repay+=a;mon(dIdx).repay+=a;}
+    else if(t.type==='income'){F.income+=a;mon(dIdx).income+=a;}
+    else if(t.type==='expense'){F.expense+=a;mon(dIdx).expense+=a;}
+  }
+  for(const t of sorted)if(t.type==='repay'){const l=loans.get(t.loanNo);if(l)l.repaid+=+t.amount||0;}
+  let overdueLoanTotal=0;
+  for(const l of loans.values()){
+    l.instAmt=Math.round(l.amount/l.n);
+    l.paidCount=l.instAmt?Math.min(l.n,Math.floor((l.repaid+1)/l.instAmt)):0;
+    l.balance=Math.max(0,l.amount-l.repaid);
+    l.remaining=l.n-l.paidCount;
+    l.dueCount=Math.max(0,Math.min(l.n,curIdx-l.idx));
+    l.overdueAmt=Math.max(0,l.dueCount*l.instAmt-l.repaid);
+    l.overdueCount=Math.ceil(l.overdueAmt/(l.instAmt||1));
+    l.done=l.repaid>=l.amount;
+    l.status=l.done?'done':l.overdueCount>0?'overdue':'active';
+    l.schedule=Array.from({length:l.n},(_,k)=>{const idx=l.idx+k+1;
+      return{k:k+1,idx,state:k<l.paidCount?'paid':idx<curIdx?'overdue':idx===curIdx?'due':'future'};});
+    l.nextIdx=l.done?null:l.idx+l.paidCount+1;
+    const m=M.get(l.memberId);if(m)m.loans.push(l);
+    if(!l.done)overdueLoanTotal+=l.overdueAmt;
+  }
+  let debtTotal=0,curPaidCount=0,activeCount=0;
+  for(const m of M.values()){
+    const ms=Math.max(startIdx,joinIdx(m.join));
+    m.startIdx=ms;
+    m.due=m.active?Math.max(0,curIdx-ms+1):0;
+    m.monthsPaid=m.monthly?Math.floor((m.paid+1)/m.monthly):0;
+    m.debt=Math.max(0,m.due*m.monthly-m.paid);
+    m.prepaid=Math.max(0,m.monthsPaid-m.due);
+    m.curAmt=m.cells.get(curIdx)||0;
+    m.curPaid=m.curAmt>=m.monthly&&m.monthly>0;
+    m.loanBalance=m.loans.reduce((n,l)=>n+(l.done?0:l.balance),0);
+    m.overdueAmt=m.loans.reduce((n,l)=>n+(l.done?0:l.overdueAmt),0);
+    m.status=m.active?(m.debt>0||m.overdueAmt>0?'debtor':'ok'):'inactive';
+    debtTotal+=m.debt;
+    if(m.active){activeCount++;if(m.curPaid)curPaidCount++;}
+  }
+  const balance=s.startBalance+F.shares+F.repay+F.income-F.loansOut-F.expense;
+  const receivable=F.loansOut-F.repay;
+  return{cur,curIdx,startIdx,members:[...M.values()],M,loans:[...loans.values()].sort((a,b)=>a.no-b.no),monthly,
+    fund:{...F,balance,receivable,assets:balance+receivable,debtTotal,overdueLoanTotal,curPaidCount,activeCount}};
+}
+// وضعیت یک خانه از ماتریس پرداخت
+function cellState(m,idx,curIdx){
+  const a=m.cells.get(idx)||0;
+  if(m.monthly&&a>=m.monthly)return'paid';
+  if(a>0)return'partial';
+  if(idx>curIdx)return'future';
+  if(idx<m.startIdx||!m.active)return'na';
+  return idx===curIdx?'due':'unpaid';
+}
+// اولین ماهی که سهم عضو کامل پرداخت نشده (برای پیش‌فرض فرم)
+function nextUnpaid(m,curIdx){
+  for(let i=m.startIdx;i<=curIdx+24;i++)if((m.cells.get(i)||0)<m.monthly)return fromIdx(i);
+  return fromIdx(curIdx);
+}
+
+return {TYPES,mIdx,fromIdx,shareIdx,compute,cellState,nextUnpaid};})();
+const {TYPES,mIdx,fromIdx,shareIdx,compute,cellState,nextUnpaid}=__calc;
+const seed=(()=>{// داده‌ی اولیه از فایل اکسل صندوق
+const __default = {
+ "settings": {
+  "fundName": "صندوق خانوادگی مهر",
+  "startYear": 1405,
+  "startMonth": 1,
+  "startBalance": 60000000,
+  "baseShare": 500000,
+  "defaultLoan": 25000000,
+  "defaultInstallments": 25,
+  "manager": "داریوش صمدی",
+  "card": "",
+  "currency": "تومان",
+  "curMode": "manual",
+  "curYear": 1405,
+  "curMonth": 7,
+  "rules": [
+   "۱) هر عضو موظف است تا پایان هر ماه سهم ماهانهٔ خود را واریز کند.",
+   "۲) وام به اعضای فعال و بدون بدهی پرداخت می‌شود.",
+   "۳) بازپرداخت وام به‌صورت اقساط مساوی ماهانه و از یک ماه پس از دریافت وام است."
+  ]
+ },
+ "members": [
+  {
+   "id": 1,
+   "name": "داریوش صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 2,
+   "name": "کمال صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 3,
+   "name": "هوشمند صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 4,
+   "name": "پریا صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 5,
+   "name": "صباح صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 6,
+   "name": "پرهام صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 7,
+   "name": "نهیه جعفری",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 8,
+   "name": "عرفان صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 9,
+   "name": "هلیا صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 10,
+   "name": "ژینو صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 11,
+   "name": "کیانا صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 12,
+   "name": "سیروس صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 13,
+   "name": "آریز صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 14,
+   "name": "روزگار صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 15,
+   "name": "فهیم فتحی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 16,
+   "name": "هوشیار صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 17,
+   "name": "پدرام صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 18,
+   "name": "کاویان فتحی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 19,
+   "name": "سمیه رحمتی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 20,
+   "name": "گلاویژ صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 21,
+   "name": "عباس صمدی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  },
+  {
+   "id": 22,
+   "name": "نهیه رحمتی",
+   "join": "1404/07/01",
+   "status": "فعال",
+   "coef": 1
+  }
+ ],
+ "tx": [
+  {
+   "date": "1405/01/30",
+   "memberId": 1,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s001",
+   "createdAt": 0
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 2,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s002",
+   "createdAt": 1
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 3,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s003",
+   "createdAt": 2
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 4,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s004",
+   "createdAt": 3
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 5,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s005",
+   "createdAt": 4
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 6,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s006",
+   "createdAt": 5
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 7,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s007",
+   "createdAt": 6
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 10,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s008",
+   "createdAt": 7
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 11,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s009",
+   "createdAt": 8
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 12,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s010",
+   "createdAt": 9
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 13,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s011",
+   "createdAt": 10
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 14,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s012",
+   "createdAt": 11
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s013",
+   "createdAt": 12
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 19,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s014",
+   "createdAt": 13
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 20,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s015",
+   "createdAt": 14
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 21,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s016",
+   "createdAt": 15
+  },
+  {
+   "date": "1405/01/30",
+   "memberId": 22,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 1,
+   "id": "s017",
+   "createdAt": 16
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 1,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s018",
+   "createdAt": 17
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 2,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s019",
+   "createdAt": 18
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 3,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s020",
+   "createdAt": 19
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 4,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s021",
+   "createdAt": 20
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 5,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s022",
+   "createdAt": 21
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 6,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s023",
+   "createdAt": 22
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 7,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s024",
+   "createdAt": 23
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 10,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s025",
+   "createdAt": 24
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 11,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s026",
+   "createdAt": 25
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 12,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s027",
+   "createdAt": 26
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 13,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s028",
+   "createdAt": 27
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 14,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s029",
+   "createdAt": 28
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s030",
+   "createdAt": 29
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 19,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s031",
+   "createdAt": 30
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 20,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s032",
+   "createdAt": 31
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 21,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s033",
+   "createdAt": 32
+  },
+  {
+   "date": "1405/02/30",
+   "memberId": 22,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 2,
+   "id": "s034",
+   "createdAt": 33
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 1,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s035",
+   "createdAt": 34
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 2,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s036",
+   "createdAt": 35
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 3,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s037",
+   "createdAt": 36
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 4,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s038",
+   "createdAt": 37
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 5,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s039",
+   "createdAt": 38
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 6,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s040",
+   "createdAt": 39
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 7,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s041",
+   "createdAt": 40
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 10,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s042",
+   "createdAt": 41
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 11,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s043",
+   "createdAt": 42
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 12,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s044",
+   "createdAt": 43
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 13,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s045",
+   "createdAt": 44
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 14,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s046",
+   "createdAt": 45
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s047",
+   "createdAt": 46
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 19,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s048",
+   "createdAt": 47
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 20,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s049",
+   "createdAt": 48
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 21,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s050",
+   "createdAt": 49
+  },
+  {
+   "date": "1405/03/30",
+   "memberId": 22,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 3,
+   "id": "s051",
+   "createdAt": 50
+  },
+  {
+   "date": "1405/04/06",
+   "memberId": 7,
+   "type": "loan",
+   "amount": 25000000,
+   "method": "کارت",
+   "loanNo": 1,
+   "installments": 25,
+   "id": "s052",
+   "createdAt": 51
+  },
+  {
+   "date": "1405/04/06",
+   "memberId": 10,
+   "type": "loan",
+   "amount": 25000000,
+   "method": "کارت",
+   "loanNo": 2,
+   "installments": 25,
+   "id": "s053",
+   "createdAt": 52
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 3,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s054",
+   "createdAt": 53
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 4,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s055",
+   "createdAt": 54
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 5,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s056",
+   "createdAt": 55
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 6,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s057",
+   "createdAt": 56
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 7,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s058",
+   "createdAt": 57
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 10,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s059",
+   "createdAt": 58
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 11,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s060",
+   "createdAt": 59
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 12,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s061",
+   "createdAt": 60
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 13,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s062",
+   "createdAt": 61
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 14,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s063",
+   "createdAt": 62
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s064",
+   "createdAt": 63
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 19,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s065",
+   "createdAt": 64
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 20,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s066",
+   "createdAt": 65
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 21,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s067",
+   "createdAt": 66
+  },
+  {
+   "date": "1405/04/30",
+   "memberId": 22,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s068",
+   "createdAt": 67
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 1,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s069",
+   "createdAt": 68
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 2,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 4,
+   "id": "s070",
+   "createdAt": 69
+  },
+  {
+   "date": "1405/05/01",
+   "memberId": 7,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 1,
+   "instNo": 1,
+   "id": "s071",
+   "createdAt": 70
+  },
+  {
+   "date": "1405/05/01",
+   "memberId": 10,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 2,
+   "instNo": 1,
+   "id": "s072",
+   "createdAt": 71
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 1,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s073",
+   "createdAt": 72
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 2,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s074",
+   "createdAt": 73
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 3,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s075",
+   "createdAt": 74
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 4,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s076",
+   "createdAt": 75
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 5,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s077",
+   "createdAt": 76
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 6,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s078",
+   "createdAt": 77
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 7,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s079",
+   "createdAt": 78
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 10,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s080",
+   "createdAt": 79
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 11,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s081",
+   "createdAt": 80
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 1,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s082",
+   "createdAt": 81
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 13,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s083",
+   "createdAt": 82
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 14,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s084",
+   "createdAt": 83
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s085",
+   "createdAt": 84
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 19,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s086",
+   "createdAt": 85
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 20,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s087",
+   "createdAt": 86
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 21,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s088",
+   "createdAt": 87
+  },
+  {
+   "date": "1405/05/30",
+   "memberId": 22,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 5,
+   "id": "s089",
+   "createdAt": 88
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 7,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 1,
+   "instNo": 2,
+   "id": "s090",
+   "createdAt": 89
+  },
+  {
+   "date": "1405/06/02",
+   "memberId": 10,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 2,
+   "instNo": 2,
+   "id": "s091",
+   "createdAt": 90
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 2,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s092",
+   "createdAt": 91
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 3,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s093",
+   "createdAt": 92
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 4,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s094",
+   "createdAt": 93
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 5,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s095",
+   "createdAt": 94
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 6,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s096",
+   "createdAt": 95
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 7,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s097",
+   "createdAt": 96
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 10,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s098",
+   "createdAt": 97
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 11,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s099",
+   "createdAt": 98
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 13,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s100",
+   "createdAt": 99
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 14,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s101",
+   "createdAt": 100
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s102",
+   "createdAt": 101
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 19,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s103",
+   "createdAt": 102
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 20,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s104",
+   "createdAt": 103
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 21,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s105",
+   "createdAt": 104
+  },
+  {
+   "date": "1405/06/01",
+   "memberId": 22,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 6,
+   "id": "s106",
+   "createdAt": 105
+  },
+  {
+   "date": "1405/06/09",
+   "memberId": 21,
+   "type": "loan",
+   "amount": 25000000,
+   "method": "کارت",
+   "loanNo": 3,
+   "installments": 25,
+   "id": "s107",
+   "createdAt": 106
+  },
+  {
+   "date": "1405/06/09",
+   "memberId": 22,
+   "type": "loan",
+   "amount": 25000000,
+   "method": "کارت",
+   "loanNo": 4,
+   "installments": 25,
+   "id": "s108",
+   "createdAt": 107
+  },
+  {
+   "date": "1405/07/01",
+   "memberId": 7,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 1,
+   "instNo": 3,
+   "id": "s109",
+   "createdAt": 108
+  },
+  {
+   "date": "1405/07/01",
+   "memberId": 21,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 3,
+   "instNo": 1,
+   "id": "s110",
+   "createdAt": 109
+  },
+  {
+   "date": "1405/07/01",
+   "memberId": 22,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 4,
+   "instNo": 1,
+   "id": "s111",
+   "createdAt": 110
+  },
+  {
+   "date": "1405/07/03",
+   "memberId": 10,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 2,
+   "instNo": 3,
+   "id": "s112",
+   "createdAt": 111
+  },
+  {
+   "date": "1405/07/04",
+   "memberId": 3,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s113",
+   "createdAt": 112
+  },
+  {
+   "date": "1405/07/04",
+   "memberId": 4,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s114",
+   "createdAt": 113
+  },
+  {
+   "date": "1405/07/04",
+   "memberId": 10,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s115",
+   "createdAt": 114
+  },
+  {
+   "date": "1405/07/04",
+   "memberId": 13,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s116",
+   "createdAt": 115
+  },
+  {
+   "date": "1405/07/15",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s117",
+   "createdAt": 116
+  },
+  {
+   "date": "1405/07/15",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 8,
+   "id": "s118",
+   "createdAt": 117
+  },
+  {
+   "date": "1405/07/15",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 9,
+   "id": "s119",
+   "createdAt": 118
+  },
+  {
+   "date": "1405/07/15",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 10,
+   "id": "s120",
+   "createdAt": 119
+  },
+  {
+   "date": "1405/07/15",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 11,
+   "id": "s121",
+   "createdAt": 120
+  },
+  {
+   "date": "1405/07/15",
+   "memberId": 15,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 12,
+   "id": "s122",
+   "createdAt": 121
+  },
+  {
+   "date": "1405/07/22",
+   "memberId": 7,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s123",
+   "createdAt": 122
+  },
+  {
+   "date": "1405/07/27",
+   "memberId": 20,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s124",
+   "createdAt": 123
+  },
+  {
+   "date": "1405/07/28",
+   "memberId": 7,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 1,
+   "instNo": 4,
+   "id": "s125",
+   "createdAt": 124
+  },
+  {
+   "date": "1405/07/30",
+   "memberId": 5,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s126",
+   "createdAt": 125
+  },
+  {
+   "date": "1405/08/01",
+   "memberId": 1,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s127",
+   "createdAt": 126
+  },
+  {
+   "date": "1405/08/01",
+   "memberId": 2,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s128",
+   "createdAt": 127
+  },
+  {
+   "date": "1405/07/01",
+   "memberId": 11,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s129",
+   "createdAt": 128
+  },
+  {
+   "date": "1405/08/01",
+   "memberId": 19,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s130",
+   "createdAt": 129
+  },
+  {
+   "date": "1405/08/03",
+   "memberId": 21,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s131",
+   "createdAt": 130
+  },
+  {
+   "date": "1405/08/03",
+   "memberId": 22,
+   "type": "share",
+   "amount": 500000,
+   "method": "کارت",
+   "forYear": 1405,
+   "forMonth": 7,
+   "id": "s132",
+   "createdAt": 131
+  },
+  {
+   "date": "1405/08/03",
+   "memberId": 21,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 3,
+   "instNo": 2,
+   "id": "s133",
+   "createdAt": 132
+  },
+  {
+   "date": "1405/08/03",
+   "memberId": 22,
+   "type": "repay",
+   "amount": 1000000,
+   "method": "کارت",
+   "loanNo": 4,
+   "instNo": 2,
+   "id": "s134",
+   "createdAt": 133
+  }
+ ]
+};
+
+return __default;})();
+// تنظیمات Firebase را اینجا قرار دهید (راهنما: README.md).
+// تا وقتی apiKey خالی است، اپ در «حالت آزمایشی محلی» اجرا می‌شود و داده‌ها فقط روی همین گوشی می‌مانند.
+const firebaseConfig = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+
+const __data=(()=>{// لایهٔ داده: Firebase (همگام + آفلاین) یا حالت آزمایشی محلی. هر دو یک رابط یکسان دارند.
+
+
+const FB = 'https://www.gstatic.com/firebasejs/10.14.1/';
+const clone = o => JSON.parse(JSON.stringify(o));
+const uid = () => 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+async function createStore() {
+  return firebaseConfig.apiKey ? fbStore() : localStore();
+}
+
+/* ---------- حالت آزمایشی (localStorage) ---------- */
+function localStore() {
+  const KEY = 'fund_local_v1';
+  let st;
+  try { st = JSON.parse(localStorage.getItem(KEY)); } catch { /* ignore */ }
+  if (!st || !st.tx) st = clone(seed);
+  const L = new Set();
+  const snap = () => ({ settings: st.settings, members: st.members, tx: st.tx, pending: 0, ready: true, empty: false });
+  const emit = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch { /* ignore */ } L.forEach(f => f(snap())); };
+  return {
+    mode: 'local',
+    subscribe(f) { L.add(f); f(snap()); return () => L.delete(f); },
+    onAuth(f) { f({ admin: true, local: true }); },
+    async login() {}, async logout() {},
+    addTx(t) { st.tx.push({ ...t, id: uid(), createdAt: Date.now() }); emit(); },
+    updateTx(id, t) { st.tx = st.tx.map(x => x.id === id ? { ...x, ...t, id } : x); emit(); },
+    deleteTx(id) { st.tx = st.tx.filter(x => x.id !== id); emit(); },
+    saveMember(m) { const i = st.members.findIndex(x => x.id === m.id); if (i < 0) st.members.push(m); else st.members[i] = m; emit(); },
+    saveSettings(s) { st.settings = { ...st.settings, ...s }; emit(); },
+    async importAll(d) { st = clone(d); emit(); },
+    async seedInitial() { st = clone(seed); emit(); },
+    exportAll() { return clone(snap()); },
+  };
+}
+
+/* ---------- Firebase ---------- */
+async function fbStore() {
+  const [{ initializeApp }, fs, au] = await Promise.all([
+    import(FB + 'firebase-app.js'), import(FB + 'firebase-firestore.js'), import(FB + 'firebase-auth.js')]);
+  const app = initializeApp(firebaseConfig);
+  let db;
+  try {
+    db = fs.initializeFirestore(app, { localCache: fs.persistentLocalCache({ tabManager: fs.persistentMultipleTabManager() }) });
+  } catch { db = fs.initializeFirestore(app, { localCache: fs.memoryLocalCache() }); }
+  const auth = au.getAuth(app);
+  const C = { settings: null, members: [], tx: [], pending: 0, got: new Set() };
+  const L = new Set(), A = new Set(), E = new Set();
+  const snap = () => ({ settings: C.settings, members: C.members, tx: C.tx, pending: C.pending,
+    ready: C.got.size >= 3, empty: C.got.size >= 3 && !C.settings });
+  const emit = () => L.forEach(f => f(snap()));
+  const err = e => { console.error(e); E.forEach(f => f(e)); };
+  const watch = (name, apply) => fs.onSnapshot(fs.collection(db, name), { includeMetadataChanges: true }, s => {
+    apply(s); C.got.add(name);
+    C.pending = [C.tx, C.members].reduce((n, a) => n + a.filter(x => x._p).length, 0) + (C.settingsP ? 1 : 0);
+    emit();
+  }, err);
+  const rows = s => s.docs.map(d => ({ ...d.data(), id: d.data().id ?? d.id, _p: d.metadata.hasPendingWrites }));
+  watch('tx', s => { C.tx = s.docs.map(d => ({ ...d.data(), id: d.id, _p: d.metadata.hasPendingWrites })); });
+  watch('members', s => { C.members = rows(s).map(m => ({ ...m, id: +m.id })); });
+  watch('settings', s => { const d = s.docs.find(x => x.id === 'main'); C.settings = d ? d.data() : null; C.settingsP = d ? d.metadata.hasPendingWrites : false; });
+  au.onAuthStateChanged(auth, u => A.forEach(f => f({ admin: !!u, email: u && u.email })));
+  const ok = p => p.catch(err);
+  return {
+    mode: 'firebase',
+    subscribe(f) { L.add(f); f(snap()); return () => L.delete(f); },
+    onAuth(f) { A.add(f); f({ admin: !!auth.currentUser, email: auth.currentUser && auth.currentUser.email }); },
+    onError(f) { E.add(f); },
+    login: (email, pw) => au.signInWithEmailAndPassword(auth, email, pw),
+    logout: () => au.signOut(auth),
+    // نوشتن‌ها منتظر سرور نمی‌مانند: روی گوشی بلافاصله ثبت و هنگام اتصال ارسال می‌شود
+    addTx(t) { const ref = fs.doc(fs.collection(db, 'tx')); ok(fs.setDoc(ref, { ...t, createdAt: Date.now() })); },
+    updateTx(id, t) { const { id: _i, _p, ...rest } = t; ok(fs.setDoc(fs.doc(db, 'tx', id), rest, { merge: true })); },
+    deleteTx(id) { ok(fs.deleteDoc(fs.doc(db, 'tx', id))); },
+    saveMember(m) { const { _p, ...rest } = m; ok(fs.setDoc(fs.doc(db, 'members', String(m.id)), rest)); },
+    saveSettings(s) { ok(fs.setDoc(fs.doc(db, 'settings', 'main'), s, { merge: true })); },
+    async importAll(d) {
+      const ops = [
+        ...d.members.map(m => [fs.doc(db, 'members', String(m.id)), m]),
+        ...d.tx.map(t => [fs.doc(db, 'tx', String(t.id)), (({ id, _p, ...r }) => r)(t)]),
+        [fs.doc(db, 'settings', 'main'), d.settings]];
+      for (let i = 0; i < ops.length; i += 400) {
+        const b = fs.writeBatch(db);
+        ops.slice(i, i + 400).forEach(([r, v]) => b.set(r, v));
+        await b.commit();
+      }
+    },
+    async seedInitial() { await this.importAll(seed); },
+    exportAll() { return clone({ settings: C.settings, members: C.members, tx: C.tx.map(({ _p, ...r }) => r) }); },
+  };
+}
+
+return {createStore};})();
+const {createStore}=__data;
+
+
+
+/* ---------- ابزارها ---------- */
+const $ = (s, e = document) => e.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const num = n => fa(Math.round(+n || 0).toLocaleString('en-US').replace(/,/g, '٬'));
+const short = n => { const a = Math.abs(n); const f = v => fa((Math.round(v * 10) / 10).toString().replace('.', '٫'));
+  return a >= 1e9 ? f(n / 1e9) + ' میلیارد' : a >= 1e6 ? f(n / 1e6) + ' میلیون' : num(n); };
+const SHORT_M = ['فرو', 'ارد', 'خرد', 'تیر', 'مرد', 'شهر', 'مهر', 'آبا', 'آذر', 'دی', 'بهم', 'اسف'];
+const TM = {
+  share: { l: 'واریز سهم', s: 1 }, repay: { l: 'بازپرداخت وام', s: 1 }, loan: { l: 'پرداخت وام', s: -1 },
+  income: { l: 'سایر درآمد', s: 1 }, expense: { l: 'هزینه', s: -1 } };
+const METHODS = ['کارت', 'نقد', 'حواله', 'سایر'];
+const IC = {
+  home: '<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+  users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  coin: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.8-1 1.5-2.5 1.9-2.5.9-2.5 2 1 1.8 2.5 1.8 2.5-.7 2.5-1.7"/>',
+  chart: '<path d="M18 20V10M12 20V4M6 20v-6"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>' };
+const svg = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+const mName = (y, m) => `${MONTHS[m - 1]} ${fa(y)}`;
+const unit = () => esc(S.data.settings.currency || 'تومان');
+const money = n => `<span class="num">${num(n)}</span> <small class="muted">${unit()}</small>`;
+const toast = (t, ms = 2600) => { const e = $('#toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('show'), ms); };
+const parseMoney = s => +en(String(s || '')).replace(/[^\d]/g, '') || 0;
+const dec = v => fa((Math.round(v * 10) / 10).toString().replace('.', '٫'));
+const group = n => n ? Math.round(n).toLocaleString('en-US') : '';
+
+/* ---------- وضعیت ---------- */
+const S = { store: null, data: null, c: null, cur: null, admin: false, auth: {}, q: '', mf: 'all', lf: { type: 'all', member: 'all', year: 'all', q: '', n: 60 },
+  rep: 'matrix', ry: null, cy: null, open: new Set(), lastRoute: '' };
+let F = null; // وضعیت فرم تراکنش
+
+function curMonth() {
+  const s = S.data.settings;
+  if (s.curMode === 'auto') { const t = jalaliToday(); return { y: t.jy, m: t.jm }; }
+  return { y: s.curYear, m: s.curMonth };
+}
+function recompute() {
+  const d = S.data;
+  if (d && d.ready && d.settings) { S.cur = curMonth(); S.c = compute(d, S.cur); S.ry = S.ry || S.cur.y; S.cy = S.cy || S.cur.y; }
+  else S.c = null;
+}
+const member = id => S.c.M.get(+id);
+const mname = id => { const m = member(id); return m ? m.name : '—'; };
+const route = () => { const h = location.hash.replace(/^#\/?/, '').split('/'); return { name: h[0] || 'dash', id: h[1] }; };
+
+/* ---------- نمایش اصلی ---------- */
+function render() {
+  const root = $('#app'), d = S.data;
+  if (S.fatal) { root.innerHTML = `<div class="wrap"><div class="card" style="margin-top:20vh"><h2>خطا در راه‌اندازی</h2><p class="muted">${esc(S.fatal)}</p></div></div>`; return; }
+  if (!d || !d.ready) { root.innerHTML = '<div class="boot">در حال دریافت اطلاعات…</div>'; return; }
+  const r = route(), key = r.name + '/' + (r.id || '');
+  const y = key === S.lastRoute ? window.scrollY : 0; S.lastRoute = key;
+  let title = d.settings ? d.settings.fundName : 'صندوق خانوادگی', body = '', back = false, fab = true;
+  if (r.name === 'login') { body = vLogin(); title = 'ورود مدیر'; back = true; fab = false; }
+  else if (d.empty || !d.settings) { body = vEmpty(); fab = false; }
+  else {
+    const top = { dash: vDash, members: vMembers, ledger: vLedger, loans: vLoans, reports: vReports, settings: vSettings };
+    if (r.name === 'member') { const m = member(r.id); body = m ? vMember(m) : '<div class="empty">عضو پیدا نشد</div>'; title = m ? m.name : ''; back = true; }
+    else if (top[r.name]) { body = top[r.name](); if (r.name !== 'dash') title = { members: 'اعضا', ledger: 'گردش مالی', loans: 'وام‌ها', reports: 'گزارش‌ها', settings: 'تنظیمات' }[r.name]; back = r.name === 'settings'; }
+    else body = vDash();
+  }
+  const ready = d.ready && d.settings;
+  root.innerHTML = `
+  <header class="top"><div class="wrap">
+    ${back ? '<button class="back" data-act="back" aria-label="بازگشت">→</button>' : ''}
+    <h1>${esc(title)}</h1>${syncChip()}
+    ${!back && ready ? `<a class="icon-btn" href="#/settings" aria-label="تنظیمات">${svg('gear')}</a>` : ''}
+  </div></header>
+  <main class="wrap">${body}</main>
+  ${ready ? nav(r.name) : ''}
+  ${fab && S.admin && ready ? '<button class="fab" data-act="tx-new" aria-label="ثبت تراکنش">+</button>' : ''}`;
+  window.scrollTo(0, y);
+}
+function syncChip() {
+  const d = S.data;
+  if (S.store.mode === 'local') return '<span class="sync demo"><i></i>حالت آزمایشی</span>';
+  if (!navigator.onLine) return `<span class="sync off"><i></i>آفلاین${d.pending ? ' · ' + fa(d.pending) + ' در صف' : ''}</span>`;
+  if (d.pending) return `<span class="sync pend"><i></i>در حال ارسال ${fa(d.pending)}</span>`;
+  return '<span class="sync"><i></i>همگام</span>';
+}
+function nav(cur) {
+  const it = [['dash', 'داشبورد', 'home'], ['members', 'اعضا', 'users'], ['ledger', 'گردش مالی', 'list'], ['loans', 'وام‌ها', 'coin'], ['reports', 'گزارش‌ها', 'chart']];
+  return `<nav class="nav"><div class="wrap">${it.map(([k, l, i]) => `<a href="#/${k === 'dash' ? '' : k}" class="${cur === k || (cur === 'member' && k === 'members') ? 'on' : ''}">${svg(i)}${l}</a>`).join('')}</div></nav>`;
+}
+
+/* ---------- داشبورد ---------- */
+function vDash() {
+  const C = S.c, f = C.fund, cur = S.cur;
+  const unpaid = C.members.filter(m => m.active && !m.curPaid);
+  const debtors = C.members.filter(m => m.debt > 0 || m.overdueAmt > 0).sort((a, b) => (b.debt + b.overdueAmt) - (a.debt + a.overdueAmt));
+  const recent = [...S.data.tx].sort(txSort).slice(0, 6);
+  const pct = f.activeCount ? Math.round(f.curPaidCount / f.activeCount * 100) : 0;
+  return `
+  <section class="card hero">
+    <div class="lbl">موجودی نقدی صندوق</div>
+    <div class="big num">${num(f.balance)}<small>${unit()}</small></div>
+    <div class="sub"><div>کل دارایی (نقد + مطالبات)<b class="num">${short(f.assets)}</b></div>
+      <div>مطالبات وام<b class="num">${short(f.receivable)}</b></div></div>
+  </section>
+  <div class="grid2">
+    <div class="kpi"><div class="l">مجموع سهم اعضا</div><div class="v num">${short(f.shares)}</div></div>
+    <div class="kpi gold"><div class="l">وام‌های پرداخت‌شده</div><div class="v num">${short(f.loansOut)}</div></div>
+    <div class="kpi ${f.debtTotal ? 'bad' : 'ok'}"><div class="l">بدهی معوق سهم</div><div class="v num">${f.debtTotal ? short(f.debtTotal) : 'ندارد'}</div></div>
+    <div class="kpi ${f.overdueLoanTotal ? 'bad' : 'ok'}"><div class="l">اقساط معوق وام</div><div class="v num">${f.overdueLoanTotal ? short(f.overdueLoanTotal) : 'ندارد'}</div></div>
+  </div>
+  <section class="card">
+    <h2>سهم ${mName0(cur)} <small>${S.admin ? `<a href="#" data-act="cur-month" style="color:var(--pri)">تغییر ماه ✎</a>` : ''}</small></h2>
+    <div class="bar" style="margin-bottom:8px"><i style="width:${pct}%"></i></div>
+    <div class="small"><b>${fa(f.curPaidCount)}</b> از ${fa(f.activeCount)} عضو پرداخت کرده‌اند (${fa(pct)}٪)</div>
+    ${unpaid.length ? `<div class="small muted" style="margin:10px 0 6px">پرداخت‌نکرده:</div><div class="chips" style="margin:0">${unpaid.map(m => `<a class="chip warn" href="#/member/${m.id}">${esc(m.name)}</a>`).join('')}</div>` : '<div class="note ok" style="margin:10px 0 0">همه‌ی اعضا سهم این ماه را پرداخت کرده‌اند 🎉</div>'}
+  </section>
+  <section class="card"><h2>دریافتی ماهانه <small>${yearSelect('cy', S.cy)}</small></h2>${chart(S.cy)}</section>
+  <section class="card"><h2>بدهکاران <small><a href="#/reports" data-act="rep-debt">گزارش کامل</a></small></h2>
+    ${debtors.length ? `<div class="list">${debtors.slice(0, 5).map(m => `<a class="row" href="#/member/${m.id}"><div class="av bad">${esc(m.name[0])}</div><div class="grow"><div class="t">${esc(m.name)}</div><div class="s">${m.debt ? `سهم: ${fa(Math.ceil(m.debt / m.monthly))} ماه` : ''}${m.debt && m.overdueAmt ? ' · ' : ''}${m.overdueAmt ? 'قسط معوق' : ''}</div></div><div class="amt neg num">${num(m.debt + m.overdueAmt)}</div></a>`).join('')}</div>` : '<div class="empty">بدهکاری وجود ندارد</div>'}
+  </section>
+  <section class="card"><h2>آخرین تراکنش‌ها <small><a href="#/ledger">همه</a></small></h2>${txRows(recent) || '<div class="empty">هنوز تراکنشی ثبت نشده</div>'}</section>`;
+}
+const mName0 = c => mName(c.y, c.m);
+function yearSelect(k, val) {
+  const s = S.data.settings, ys = []; for (let y = s.startYear; y <= Math.max(S.cur.y, val) + 1; y++) ys.push(y);
+  return `<select class="in" style="width:auto;padding:3px 8px;font-size:.8rem" data-sel="${k}">${ys.map(y => `<option value="${y}" ${y === val ? 'selected' : ''}>${fa(y)}</option>`).join('')}</select>`;
+}
+function chart(year) {
+  const C = S.c, W = 340, H = 150, bw = 20, gap = (W - 12 * bw) / 13;
+  const v = Array.from({ length: 12 }, (_, i) => C.monthly.get(mIdx(year, i + 1)) || { share: 0, repay: 0 });
+  const max = Math.max(1, ...v.map(x => x.share + x.repay)), base = H - 22, hh = base - 14;
+  let g = '';
+  v.forEach((x, i) => {
+    const X = gap + i * (bw + gap), hs = x.share / max * hh, hr = x.repay / max * hh;
+    g += `<rect x="${X}" y="${base - hs}" width="${bw}" height="${hs}" rx="3" fill="var(--pri)"/>`;
+    if (hr) g += `<rect x="${X}" y="${base - hs - hr}" width="${bw}" height="${hr}" rx="3" fill="var(--gold)"/>`;
+    const tot = x.share + x.repay;
+    if (tot) g += `<text x="${X + bw / 2}" y="${base - hs - hr - 3}" text-anchor="middle">${dec(tot / 1e6)}</text>`;
+    g += `<text x="${X + bw / 2}" y="${H - 8}" text-anchor="middle" ${year === S.cur.y && i + 1 === S.cur.m ? 'style="fill:var(--ink);font-weight:700"' : ''}>${SHORT_M[i]}</text>`;
+  });
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="نمودار دریافتی ماهانه">${g}<line x1="0" x2="${W}" y1="${base}" y2="${base}" stroke="var(--line)"/></svg>
+  <div class="legend"><span style="--c:var(--pri)">سهم اعضا</span><span style="--c:var(--gold)">اقساط وام</span><span>اعداد: میلیون ${unit()}</span></div>`;
+}
+
+/* ---------- تراکنش‌ها ---------- */
+const txSort = (a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : (b.createdAt || 0) - (a.createdAt || 0);
+function txSub(t) {
+  const p = [fmtDate(t.date)];
+  if (t.type === 'share') p.push(`سهم ${MONTHS[(t.forMonth || +t.date.split('/')[1]) - 1]} ${fa(t.forYear || t.date.split('/')[0])}`);
+  if (t.type === 'repay') p.push(`وام ${fa(t.loanNo)} · قسط ${fa(t.instNo || '؟')}`);
+  if (t.type === 'loan') p.push(`وام ${fa(t.loanNo)} · ${fa(t.installments)} قسط`);
+  if (t.note) p.push(esc(t.note));
+  return p.join(' · ');
+}
+function txRows(list) {
+  return `<div class="list">${list.map(t => {
+    const m = TM[t.type], who = t.memberId ? mname(t.memberId) : '';
+    return `<div class="row" ${S.admin ? `data-act="tx-edit" data-id="${esc(t.id)}"` : ''}>
+      <div class="av ${m.s < 0 ? 'bad' : t.type === 'repay' ? 'gold' : ''}">${m.s > 0 ? '＋' : '−'}</div>
+      <div class="grow"><div class="t">${m.l}${who ? ' · ' + esc(who) : ''}${t._p ? ' <span class="chip warn">در صف ارسال</span>' : ''}</div><div class="s">${txSub(t)}</div></div>
+      <div class="amt ${m.s > 0 ? 'pos' : 'neg'} num">${m.s > 0 ? '+' : '−'}${num(t.amount)}</div></div>`;
+  }).join('')}</div>`;
+}
+function filteredTx() {
+  const f = S.lf, q = f.q.trim();
+  return [...S.data.tx].filter(t => (f.type === 'all' || t.type === f.type) && (f.member === 'all' || t.memberId === +f.member) &&
+    (f.year === 'all' || t.date.startsWith(f.year)) && (!q || (mname0(t) + ' ' + (t.note || '')).includes(q))).sort(txSort);
+}
+const mname0 = t => t.memberId ? mName2(t.memberId) : '';
+const mName2 = id => mname(id);
+function vLedger() {
+  const f = S.lf, list = filteredTx(), shown = list.slice(0, f.n);
+  const sum = list.reduce((n, t) => n + TM[t.type].s * t.amount, 0);
+  const years = [...new Set(S.data.tx.map(t => t.date.slice(0, 4)))].sort().reverse();
+  return `
+  <input class="search" id="lq" placeholder="جستجو در نام عضو یا شرح…" value="${esc(f.q)}">
+  <div class="r3" style="margin-bottom:10px;grid-template-columns:1fr 1fr 1fr">
+    <select class="in" data-lf="type"><option value="all">همه‌ی انواع</option>${Object.entries(TM).map(([k, v]) => `<option value="${k}" ${f.type === k ? 'selected' : ''}>${v.l}</option>`).join('')}</select>
+    <select class="in" data-lf="member"><option value="all">همه‌ی اعضا</option>${S.c.members.map(m => `<option value="${m.id}" ${f.member == m.id ? 'selected' : ''}>${esc(m.name)}</option>`).join('')}</select>
+    <select class="in" data-lf="year"><option value="all">همه‌ی سال‌ها</option>${years.map(y => `<option value="${y}" ${f.year === y ? 'selected' : ''}>${fa(y)}</option>`).join('')}</select>
+  </div>
+  <div class="card"><h2>${fa(list.length)} تراکنش <small>جمع خالص: <b class="num" style="color:${sum < 0 ? 'var(--bad)' : 'var(--ok)'}">${num(sum)}</b></small></h2>
+  <div id="llist">${shown.length ? txRows(shown) : '<div class="empty">تراکنشی پیدا نشد</div>'}</div>
+  ${list.length > shown.length ? '<button class="btn sec block" data-act="more" style="margin-top:10px">نمایش بیشتر</button>' : ''}</div>
+  <div class="btns no-print"><button class="btn sec sm" data-act="export-csv">دریافت CSV (برای اکسل)</button></div>`;
+}
+
+/* ---------- اعضا ---------- */
+function memberRows() {
+  const q = S.q.trim();
+  const list = S.c.members.filter(m => (S.mf === 'all' || (S.mf === 'debt' && (m.debt > 0 || m.overdueAmt > 0)) || (S.mf === 'loan' && m.loanBalance > 0) || (S.mf === 'unpaid' && m.active && !m.curPaid)) && (!q || m.name.includes(q)));
+  if (!list.length) return '<div class="empty">عضوی پیدا نشد</div>';
+  return `<div class="list">${list.map(m => {
+    const chip = m.status === 'inactive' ? '<span class="chip mut">غیرفعال</span>' : m.status === 'debtor' ? '<span class="chip bad">بدهکار</span>' : '<span class="chip ok">بدون بدهی</span>';
+    return `<a class="row" href="#/member/${m.id}"><div class="av ${m.status === 'debtor' ? 'bad' : ''}">${esc(m.name[0] || '؟')}</div>
+      <div class="grow"><div class="t">${esc(m.name)}</div><div class="s">${fa(Math.min(m.monthsPaid, 999))} ماه پرداخت${m.loanBalance ? ' · وام: ' + short(m.loanBalance) : ''}${m.curPaid ? '' : ' · این ماه: ✕'}</div></div>${chip}</a>`;
+  }).join('')}</div>`;
+}
+function vMembers() {
+  const fl = [['all', 'همه'], ['debt', 'بدهکار'], ['unpaid', 'پرداخت‌نکرده این ماه'], ['loan', 'وام‌دار']];
+  return `<input class="search" id="mq" placeholder="جستجوی نام عضو…" value="${esc(S.q)}">
+  <div class="chips">${fl.map(([k, l]) => `<button class="fchip ${S.mf === k ? 'on' : ''}" data-act="mf" data-v="${k}">${l}</button>`).join('')}</div>
+  <div class="card" id="plist">${memberRows()}</div>
+  ${S.admin ? '<button class="btn sec block" data-act="member-new">+ عضو جدید</button>' : ''}`;
+}
+function loanCard(l, open) {
+  const pct = Math.round(l.paidCount / l.n * 100);
+  const chip = l.done ? '<span class="chip ok">تسویه</span>' : l.status === 'overdue' ? '<span class="chip bad">معوق</span>' : '<span class="chip ok">فعال</span>';
+  const sch = l.schedule.map(x => `<div class="${x.state}" title="${MONTHS[fromIdx(x.idx).m - 1]} ${fromIdx(x.idx).y}">${fa(x.k)}</div>`).join('');
+  return `<div class="card"><h2><span>وام ${fa(l.no)} · ${esc(mname(l.memberId))}</span>${chip}</h2>
+    <div class="tiles"><div class="tile"><b class="num">${short(l.amount)}</b><span>مبلغ وام</span></div><div class="tile"><b class="num">${short(l.balance)}</b><span>مانده</span></div><div class="tile"><b class="num">${num(l.instAmt)}</b><span>هر قسط</span></div></div>
+    <div class="bar gold" style="margin-bottom:6px"><i style="width:${pct}%"></i></div>
+    <div class="small muted">${fa(l.paidCount)} از ${fa(l.n)} قسط پرداخت شده · دریافت ${fmtDate(l.date)}${l.nextIdx ? ' · قسط بعدی: ' + mName(fromIdx(l.nextIdx).y, fromIdx(l.nextIdx).m) : ''}${l.overdueCount ? ` · <b style="color:var(--bad)">${fa(l.overdueCount)} قسط معوق</b>` : ''}</div>
+    <button class="btn sec sm" style="margin-top:10px" data-act="toggle-loan" data-no="${l.no}">${open ? 'بستن جدول اقساط' : 'جدول اقساط'}</button>
+    ${open ? `<div class="strip" style="grid-template-columns:repeat(9,1fr);margin-top:10px">${sch}</div>
+    <div class="legend"><span style="--c:var(--ok-soft)">پرداخت‌شده</span><span style="--c:var(--warn-soft)">سررسید این ماه</span><span style="--c:var(--bad-soft)">معوق</span><span style="--c:var(--surface2)">آینده</span></div>` : ''}
+    ${S.admin && !l.done ? `<button class="btn sm" style="margin-top:6px" data-act="tx-new" data-type="repay" data-member="${l.memberId}" data-loan="${l.no}">ثبت قسط</button>` : ''}</div>`;
+}
+function vMember(m) {
+  const C = S.c, y = S.cur.y, pays = S.data.tx.filter(t => t.memberId === m.id).sort(txSort);
+  const strip = Array.from({ length: 12 }, (_, i) => { const st = cellState(m, mIdx(y, i + 1), C.curIdx); return `<div class="${st}">${SHORT_M[i]}</div>`; }).join('');
+  return `
+  <section class="card"><div style="display:flex;gap:12px;align-items:center"><div class="av ${m.status === 'debtor' ? 'bad' : ''}" style="width:54px;height:54px;font-size:1.3rem">${esc(m.name[0])}</div>
+    <div class="grow"><div style="font-weight:800;font-size:1.1rem">${esc(m.name)}</div><div class="small muted">کد ${fa(m.id)} · عضو از ${fmtDate(m.join)} · سهم ماهانه ${num(m.monthly)}</div></div>
+    ${m.status === 'inactive' ? '<span class="chip mut">غیرفعال</span>' : m.status === 'debtor' ? '<span class="chip bad">بدهکار</span>' : '<span class="chip ok">بدون بدهی</span>'}</div></section>
+  <div class="tiles"><div class="tile"><b class="num">${num(m.paid)}</b><span>جمع واریزی سهم</span></div>
+    <div class="tile"><b>${fa(m.monthsPaid)} / ${fa(m.due)}</b><span>ماه پرداخت / سررسید</span></div>
+    <div class="tile"><b class="num" style="color:${m.debt ? 'var(--bad)' : 'var(--ok)'}">${m.debt ? num(m.debt) : 'ندارد'}</b><span>بدهی سهم</span></div></div>
+  ${m.prepaid ? `<div class="note ok">${fa(m.prepaid)} ماه پیش‌پرداخت دارد.</div>` : ''}
+  <section class="card"><h2>وضعیت سهم ${fa(y)}</h2><div class="strip">${strip}</div>
+    <div class="legend"><span style="--c:var(--ok-soft)">پرداخت</span><span style="--c:var(--bad-soft)">معوق</span><span style="--c:var(--warn-soft)">ماه جاری</span><span style="--c:var(--gold-soft)">ناقص</span></div></section>
+  ${m.loans.map(l => loanCard(l, S.open.has(l.no))).join('')}
+  <section class="card"><h2>تاریخچه <small>${fa(pays.length)} مورد</small></h2>${pays.length ? txRows(pays) : '<div class="empty">تراکنشی ثبت نشده</div>'}</section>
+  ${S.admin ? `<div class="btns"><button class="btn" data-act="tx-new" data-member="${m.id}">+ ثبت تراکنش برای ${esc(m.name.split(' ')[0])}</button><button class="btn sec" data-act="member-edit" data-id="${m.id}">ویرایش عضو</button></div>` : ''}`;
+}
+
+/* ---------- وام‌ها ---------- */
+function vLoans() {
+  const ls = [...S.c.loans].sort((a, b) => (a.done - b.done) || a.no - b.no);
+  const act = ls.filter(l => !l.done), tot = act.reduce((n, l) => n + l.balance, 0);
+  return `<div class="grid2"><div class="kpi gold"><div class="l">وام فعال</div><div class="v">${fa(act.length)} <small>از ${fa(ls.length)}</small></div></div>
+    <div class="kpi"><div class="l">مانده مطالبات</div><div class="v num">${short(tot)}</div></div></div>
+  ${ls.map(l => loanCard(l, S.open.has(l.no))).join('') || '<div class="empty">وامی ثبت نشده</div>'}
+  ${S.admin ? '<button class="btn block" data-act="tx-new" data-type="loan">+ پرداخت وام جدید</button>' : ''}`;
+}
+
+/* ---------- گزارش‌ها ---------- */
+function vReports() {
+  const tabs = [['matrix', 'ماتریس سهم'], ['monthly', 'خلاصه ماهانه'], ['debt', 'بدهکاران']];
+  return `<div class="seg no-print">${tabs.map(([k, l]) => `<button class="${S.rep === k ? 'on' : ''}" data-act="rep" data-v="${k}">${l}</button>`).join('')}</div>
+  ${S.rep === 'matrix' ? rMatrix() : S.rep === 'monthly' ? rMonthly() : rDebt()}
+  <div class="btns no-print" style="margin-top:6px"><button class="btn sec sm" data-act="print">چاپ / ذخیره PDF</button></div>`;
+}
+function rMatrix() {
+  const C = S.c, y = S.ry, sym = { paid: '✓', partial: '½', unpaid: '✕', due: '○', future: '', na: '–' };
+  const rows = C.members.map(m => `<tr><td><a href="#/member/${m.id}">${esc(m.name)}</a></td>${Array.from({ length: 12 }, (_, i) => {
+    const st = cellState(m, mIdx(y, i + 1), C.curIdx); return `<td class="cell ${st}">${sym[st]}</td>`; }).join('')}<td class="num" style="color:${m.debt ? 'var(--bad)' : 'var(--ok)'}">${m.debt ? short(m.debt) : '✓'}</td></tr>`).join('');
+  const foot = Array.from({ length: 12 }, (_, i) => { const a = (C.monthly.get(mIdx(y, i + 1)) || {}).share || 0; return `<td class="num">${a ? dec(a / 1e6) : ''}</td>`; }).join('');
+  return `<section class="card"><h2>پرداخت سهم ${yearSelect('ry', y)}</h2><div class="scroll"><table class="mx"><thead><tr><th>عضو</th>${SHORT_M.map(x => `<th>${x}</th>`).join('')}<th>بدهی</th></tr></thead><tbody>${rows}</tbody>
+  <tfoot><tr><td>جمع (م.ت)</td>${foot}<td></td></tr></tfoot></table></div>
+  <div class="legend"><span style="--c:var(--ok-soft)">✓ پرداخت</span><span style="--c:var(--bad-soft)">✕ معوق</span><span style="--c:var(--warn-soft)">○ ماه جاری</span><span style="--c:var(--gold-soft)">½ ناقص</span></div></section>`;
+}
+function rMonthly() {
+  const C = S.c, y = S.ry; let T = { share: 0, repay: 0, loan: 0, income: 0, expense: 0 };
+  const rows = Array.from({ length: 12 }, (_, i) => {
+    const x = C.monthly.get(mIdx(y, i + 1)); if (!x) return ''; Object.keys(T).forEach(k => T[k] += x[k]);
+    const net = x.share + x.repay + x.income - x.loan - x.expense;
+    return `<tr><td>${MONTHS[i]}</td><td class="num">${num(x.share)}</td><td class="num">${num(x.repay)}</td><td class="num">${num(x.loan)}</td><td class="num">${num(x.income - x.expense)}</td><td class="num" style="color:${net < 0 ? 'var(--bad)' : 'var(--ok)'}">${num(net)}</td></tr>`; }).join('');
+  const net = T.share + T.repay + T.income - T.loan - T.expense;
+  return `<section class="card"><h2>خلاصه ماهانه ${yearSelect('ry', y)}</h2><div class="scroll"><table class="t" style="min-width:520px"><thead><tr><th>ماه</th><th>سهم</th><th>اقساط</th><th>وام داده‌شده</th><th>سایر (خالص)</th><th>خالص</th></tr></thead><tbody>${rows || '<tr><td colspan="6" class="empty">داده‌ای نیست</td></tr>'}</tbody>
+  <tfoot><tr style="font-weight:800"><td>جمع</td><td class="num">${num(T.share)}</td><td class="num">${num(T.repay)}</td><td class="num">${num(T.loan)}</td><td class="num">${num(T.income - T.expense)}</td><td class="num">${num(net)}</td></tr></tfoot></table></div>
+  <p class="small muted">سهم هر ماه بر اساس «بابت ماه» و اقساط/وام‌ها بر اساس تاریخ تراکنش حساب می‌شود. موجودی ابتدای دوره (${num(S.data.settings.startBalance)}) در جمع بالا نیامده است.</p></section>`;
+}
+function debtList() {
+  return S.c.members.filter(m => m.debt > 0 || m.overdueAmt > 0).sort((a, b) => (b.debt + b.overdueAmt) - (a.debt + a.overdueAmt));
+}
+function rDebt() {
+  const L = debtList(), tot = L.reduce((n, m) => n + m.debt + m.overdueAmt, 0);
+  return `<section class="card"><h2>بدهکاران تا ${mName0(S.cur)} <small class="num">${num(tot)} ${unit()}</small></h2>
+  ${L.length ? `<table class="t"><thead><tr><th>عضو</th><th>ماه معوق</th><th>بدهی سهم</th><th>قسط معوق</th></tr></thead><tbody>${L.map(m => `<tr><td><a href="#/member/${m.id}">${esc(m.name)}</a></td><td>${fa(Math.ceil(m.debt / (m.monthly || 1)))}</td><td class="num">${num(m.debt)}</td><td class="num">${num(m.overdueAmt)}</td></tr>`).join('')}</tbody></table>
+  <div class="btns no-print" style="margin-top:12px"><button class="btn sec sm" data-act="copy-debt">کپی فهرست برای ارسال در پیام‌رسان</button></div>` : '<div class="empty">هیچ عضوی بدهکار نیست 🎉</div>'}</section>`;
+}
+
+/* ---------- تنظیمات ---------- */
+function vSettings() {
+  const s = S.data.settings, ys = []; for (let y = s.startYear - 1; y <= S.cur.y + 2; y++) ys.push(y);
+  const ro = S.admin ? '' : 'disabled';
+  const mOpts = v => MONTHS.map((n, i) => `<option value="${i + 1}" ${v === i + 1 ? 'selected' : ''}>${n}</option>`).join('');
+  const yOpts = v => ys.map(y => `<option value="${y}" ${v === y ? 'selected' : ''}>${fa(y)}</option>`).join('');
+  const acct = S.store.mode === 'local'
+    ? '<div class="note">حالت آزمایشی: داده‌ها فقط روی همین مرورگر ذخیره می‌شود. برای استفاده‌ی واقعی Firebase را وصل کنید (راهنما در README).</div>'
+    : S.admin ? `<div class="note ok">وارد شده‌اید (${esc(S.auth.email || '')})</div><button class="btn sec sm" data-act="logout">خروج از حساب مدیر</button>`
+      : '<div class="note">شما به‌عنوان بازدیدکننده (فقط مشاهده) وارد شده‌اید.</div><a class="btn" href="#/login">ورود مدیر</a>';
+  return `<section class="card"><h2>حساب</h2>${acct}</section>
+  <form class="card" id="setf"><h2>تنظیمات صندوق</h2>
+    <label class="f"><span>نام صندوق</span><input class="in" name="fundName" value="${esc(s.fundName)}" ${ro}></label>
+    <div class="r2"><label class="f"><span>مدیر صندوق</span><input class="in" name="manager" value="${esc(s.manager || '')}" ${ro}></label>
+    <label class="f"><span>واحد پول</span><input class="in" name="currency" value="${esc(s.currency || 'تومان')}" ${ro}></label></div>
+    <label class="f"><span>شماره حساب / کارت صندوق (برای نمایش به اعضا)</span><input class="in ltr" name="card" value="${esc(s.card || '')}" inputmode="numeric" ${ro}></label>
+    <div class="r2"><label class="f"><span>سهم ماهانه‌ی پایه</span><input class="in ltr money" name="baseShare" value="${group(s.baseShare)}" inputmode="numeric" ${ro}></label>
+    <label class="f"><span>موجودی ابتدای دوره</span><input class="in ltr money" name="startBalance" value="${group(s.startBalance)}" inputmode="numeric" ${ro}></label></div>
+    <div class="r2"><label class="f"><span>مبلغ پیش‌فرض وام</span><input class="in ltr money" name="defaultLoan" value="${group(s.defaultLoan)}" inputmode="numeric" ${ro}></label>
+    <label class="f"><span>تعداد اقساط پیش‌فرض</span><input class="in ltr" name="defaultInstallments" value="${s.defaultInstallments}" inputmode="numeric" ${ro}></label></div>
+    <div class="r2"><label class="f"><span>سال شروع صندوق</span><select class="in" name="startYear" ${ro}>${yOpts(s.startYear)}</select></label>
+    <label class="f"><span>ماه شروع صندوق</span><select class="in" name="startMonth" ${ro}>${mOpts(s.startMonth)}</select></label></div>
+    <label class="f"><span>تعیین ماه جاری</span><select class="in" name="curMode" ${ro}><option value="manual" ${s.curMode === 'manual' ? 'selected' : ''}>دستی (مثل اکسل)</option><option value="auto" ${s.curMode === 'auto' ? 'selected' : ''}>خودکار از تاریخ امروز</option></select></label>
+    <div class="r2"><label class="f"><span>سال جاری (حالت دستی)</span><select class="in" name="curYear" ${ro}>${yOpts(s.curYear)}</select></label>
+    <label class="f"><span>ماه جاری (حالت دستی)</span><select class="in" name="curMonth" ${ro}>${mOpts(s.curMonth)}</select></label></div>
+    ${S.admin ? '<button class="btn block" type="submit">ذخیره‌ی تنظیمات</button>' : ''}</form>
+  ${(s.rules || []).length ? `<section class="card"><h2>قوانین صندوق</h2>${s.rules.map(r => `<p style="margin:.3rem 0">${esc(r)}</p>`).join('')}</section>` : ''}
+  <section class="card"><h2>اعضا <small>${fa(S.c.members.length)} نفر</small></h2><div class="list">${S.c.members.map(m => `<div class="row" ${S.admin ? `data-act="member-edit" data-id="${m.id}"` : `onclick="location.hash='#/member/${m.id}'"`}><div class="av">${esc(m.name[0])}</div><div class="grow"><div class="t">${esc(m.name)}</div><div class="s">${m.active ? 'فعال' : 'غیرفعال'} · ضریب ${fa(m.coef)}</div></div><span class="muted">${S.admin ? '✎' : '›'}</span></div>`).join('')}</div>
+    ${S.admin ? '<button class="btn sec block" data-act="member-new" style="margin-top:10px">+ عضو جدید</button>' : ''}</section>
+  ${S.admin ? `<section class="card"><h2>پشتیبان‌گیری</h2><div class="btns"><button class="btn sec sm" data-act="export-json">دریافت پشتیبان (JSON)</button><button class="btn sec sm" data-act="export-csv">دریافت CSV</button><label class="btn sec sm" style="cursor:pointer">بازیابی از فایل<input type="file" id="restore" accept=".json,application/json" hidden></label>
+    ${S.store.mode === 'local' ? '<button class="btn bad sm" data-act="reset">بازنشانی به داده‌های اکسل</button>' : ''}</div>
+    <p class="small muted">هر هفته یک پشتیبان بگیرید و جایی امن نگه دارید.</p></section>` : ''}
+  <p class="small muted" style="text-align:center">صندوق خانوادگی · نسخه‌ی PWA آفلاین</p>`;
+}
+function vLogin() {
+  if (S.store.mode === 'local') return '<div class="card login"><p>در حالت آزمایشی نیازی به ورود نیست.</p></div>';
+  return `<form class="card login" id="loginf"><h2>ورود مدیر صندوق</h2>
+    <label class="f"><span>ایمیل</span><input class="in ltr" name="email" type="email" autocomplete="username" required></label>
+    <label class="f"><span>گذرواژه</span><input class="in ltr" name="pw" type="password" autocomplete="current-password" required></label>
+    <div id="lerr" class="note bad" hidden></div><button class="btn block" type="submit">ورود</button>
+    <p class="small muted" style="margin-bottom:0">اعضا برای مشاهده نیازی به ورود ندارند.</p></form>`;
+}
+function vEmpty() {
+  const off = !navigator.onLine;
+  return `<div class="card" style="margin-top:8vh"><h2>صندوق هنوز راه‌اندازی نشده</h2>
+  ${off ? '<p class="muted">این گوشی هنوز داده‌ای ندارد. یک‌بار با اینترنت باز کنید.</p>' : S.admin
+    ? '<p class="muted">پایگاه‌داده خالی است. می‌توانید داده‌های فایل اکسل (۲۲ عضو، ۱۳۴ تراکنش) را یک‌جا بارگذاری کنید.</p><button class="btn block" data-act="seed">بارگذاری داده‌های اولیه از اکسل</button>'
+      : '<p class="muted">مدیر هنوز داده‌ای ثبت نکرده است.</p><a class="btn sec" href="#/login">ورود مدیر</a>'}</div>`;
+}
+
+/* ---------- فرم‌ها (sheet) ---------- */
+function openSheet(html) { $('#sheet-root').innerHTML = `<div class="backdrop" data-act="close"></div><div class="sheet" role="dialog"><div class="grab"></div>${html}</div>`; }
+function closeSheet() { $('#sheet-root').innerHTML = ''; F = null; }
+
+function dateSelects(p, d) {
+  const s = S.data.settings, ys = []; for (let y = s.startYear - 1; y <= S.cur.y + 2; y++) ys.push(y);
+  return `<div class="r3"><select class="in" data-f="${p}y">${ys.map(y => `<option ${y === d.y ? 'selected' : ''} value="${y}">${fa(y)}</option>`).join('')}</select>
+  <select class="in" data-f="${p}m">${MONTHS.map((n, i) => `<option ${i + 1 === d.m ? 'selected' : ''} value="${i + 1}">${n}</option>`).join('')}</select>
+  <select class="in" data-f="${p}d">${Array.from({ length: 31 }, (_, i) => `<option ${i + 1 === d.d ? 'selected' : ''} value="${i + 1}">${fa(i + 1)}</option>`).join('')}</select></div>`;
+}
+function loanOf(no) { return S.c.loans.find(l => l.no === +no); }
+function memberLoans(mid, keep) { return S.c.loans.filter(l => l.memberId === +mid && (!l.done || l.no === keep)); }
+function nextLoanNo() { return Math.max(0, ...S.c.loans.map(l => l.no)) + 1; }
+function defaults() { // مقادیر پیش‌فرض بر اساس نوع و عضو
+  const s = S.data.settings, m = F.memberId ? member(F.memberId) : null;
+  if (F.type === 'share' && m && !F.editing) { const n = nextUnpaid(m, S.c.curIdx); F.forY = n.y; F.forM = n.m; }
+  if (F.type === 'repay') { const ls = memberLoans(F.memberId, F.loanNo); if (!ls.find(l => l.no === +F.loanNo)) F.loanNo = ls[0] ? ls[0].no : ''; }
+  if (F.type === 'loan' && !F.editing) { F.loanNo = nextLoanNo(); }
+  if (!F.touched) {
+    F.amount = F.type === 'share' ? (m ? m.monthly : s.baseShare) : F.type === 'repay' ? (loanOf(F.loanNo) || {}).instAmt || '' :
+      F.type === 'loan' ? s.defaultLoan : '';
+  }
+}
+function txDyn() {
+  const need = ['share', 'repay', 'loan'].includes(F.type);
+  const mem = `<label class="f"><span>عضو${need ? '' : ' (اختیاری)'}</span><select class="in" data-f="memberId"><option value="">${need ? 'انتخاب عضو…' : '— بدون عضو —'}</option>${S.c.members.filter(m => m.active || m.id === +F.memberId).map(m => `<option value="${m.id}" ${m.id === +F.memberId ? 'selected' : ''}>${fa(m.id)} · ${esc(m.name)}</option>`).join('')}</select></label>`;
+  let x = '';
+  if (F.type === 'share') x = `<label class="f"><span>بابت ماه</span></label><div class="r2" style="margin-top:-8px;margin-bottom:12px"><select class="in" data-f="forM">${MONTHS.map((n, i) => `<option value="${i + 1}" ${+F.forM === i + 1 ? 'selected' : ''}>${n}</option>`).join('')}</select><select class="in" data-f="forY">${[F.forY - 1, F.forY, F.forY + 1].map(y => `<option ${+F.forY === y ? 'selected' : ''} value="${y}">${fa(y)}</option>`).join('')}</select></div>`;
+  if (F.type === 'repay') { const ls = memberLoans(F.memberId, F.loanNo);
+    x = ls.length ? `<label class="f"><span>وام</span><select class="in" data-f="loanNo">${ls.map(l => `<option value="${l.no}" ${l.no === +F.loanNo ? 'selected' : ''}>وام ${fa(l.no)} — مانده ${num(l.balance)}</option>`).join('')}</select></label>` : (F.memberId ? '<div class="note warn">این عضو وام فعالی ندارد.</div>' : ''); }
+  if (F.type === 'loan') x = `<label class="f"><span>تعداد اقساط</span><input class="in ltr" data-f="installments" value="${F.installments}" inputmode="numeric"></label>`;
+  return mem + x;
+}
+function txInfo() {
+  const s = S.data.settings, m = F.memberId ? member(F.memberId) : null, out = [];
+  const amt = parseMoney(F.amount);
+  if (F.type === 'share' && m) {
+    const got = m.cells.get(mIdx(+F.forY, +F.forM)) || 0, own = F.editing ? (F.origAmt || 0) : 0;
+    if (got - own >= m.monthly) out.push(['warn', `سهم ${mName(+F.forY, +F.forM)} این عضو قبلاً کامل پرداخت شده.`]);
+    if (m.debt > 0) out.push(['', `بدهی فعلی سهم: ${num(m.debt)} ${unit()}`]);
+  }
+  if (F.type === 'repay') { const l = loanOf(F.loanNo); if (l) out.push(['', `قسط شماره ${fa(F.editing && F.instNo ? F.instNo : l.paidCount + 1)} از ${fa(l.n)} · مبلغ قسط ${num(l.instAmt)} · مانده وام ${num(l.balance)}`]); }
+  if (F.type === 'loan') {
+    const n = +en(F.installments) || 0;
+    if (n > 0 && amt) out.push(['', `وام شماره ${fa(F.loanNo)} · هر قسط ${num(Math.round(amt / n))} ${unit()} · قسط اول: ${(f => mName(f.y, f.m))(fromIdx(mIdx(+F.y, +F.m) + 1))}`]);
+    if (m && m.debt > 0) out.push(['warn', `طبق قوانین، وام به عضو بدون بدهی داده می‌شود؛ این عضو ${num(m.debt)} ${unit()} بدهی سهم دارد.`]);
+    if (m && m.loans.some(l => !l.done)) out.push(['warn', 'این عضو وام فعال دیگری هم دارد.']);
+    if (amt && amt > S.c.fund.balance) out.push(['warn', `مبلغ از موجودی نقدی صندوق (${num(S.c.fund.balance)}) بیشتر است.`]);
+  }
+  if (F.type === 'expense' && amt > S.c.fund.balance) out.push(['warn', 'مبلغ از موجودی صندوق بیشتر است.']);
+  return out.map(([c, t]) => `<div class="note ${c}">${t}</div>`).join('') + `<div class="small muted" id="amt-words" style="margin:-6px 0 10px">${amt ? num(amt) + ' ' + unit() : ''}</div>`;
+}
+function openTx(o = {}) {
+  const t = o.tx, td = jalaliToday(), p = t ? t.date.split('/').map(Number) : [td.jy, td.jm, td.jd];
+  F = { editing: !!t, id: t && t.id, type: t ? t.type : (o.type || 'share'), memberId: t ? (t.memberId || '') : (o.member || ''), y: p[0], m: p[1], d: p[2],
+    amount: t ? t.amount : '', touched: !!t, method: t ? t.method : 'کارت', note: t ? t.note || '' : '', forY: t ? t.forYear || p[0] : S.cur.y, forM: t ? t.forMonth || p[1] : S.cur.m,
+    loanNo: t ? t.loanNo || '' : (o.loan || ''), installments: t ? t.installments || S.data.settings.defaultInstallments : S.data.settings.defaultInstallments, instNo: t && t.instNo, origAmt: t ? t.amount : 0 };
+  if (t) { const m = F.memberId && member(F.memberId); if (m && t.type === 'share') { /* حفظ مقدار ماه */ } }
+  defaults(); paintTx();
+}
+function paintTx() {
+  openSheet(`<form id="txf"><h3>${F.editing ? 'ویرایش تراکنش' : 'ثبت تراکنش'}</h3>
+  <div class="seg">${Object.entries(TM).map(([k, v]) => `<button type="button" class="${F.type === k ? 'on' : ''}" data-act="seg-type" data-v="${k}">${v.l}</button>`).join('')}</div>
+  <div id="f-dyn">${txDyn()}</div>
+  <label class="f"><span>تاریخ پرداخت</span></label><div style="margin-top:-8px;margin-bottom:12px">${dateSelects('', { y: +F.y, m: +F.m, d: +F.d })}</div>
+  <label class="f"><span>مبلغ (${unit()})</span><input class="in ltr money" data-f="amount" value="${group(parseMoney(F.amount))}" inputmode="numeric" placeholder="0" autocomplete="off"></label>
+  <div id="f-info">${txInfo()}</div>
+  <div class="r2"><label class="f"><span>روش پرداخت</span><select class="in" data-f="method">${METHODS.map(x => `<option ${F.method === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+  <label class="f"><span>شرح (اختیاری)</span><input class="in" data-f="note" value="${esc(F.note)}"></label></div>
+  <div class="btns"><button class="btn" style="flex:1" type="submit">${F.editing ? 'ذخیره' : 'ثبت'}</button>${F.editing ? '<button class="btn bad" type="button" data-act="tx-del">حذف</button>' : ''}<button class="btn sec" type="button" data-act="close">انصراف</button></div></form>`);
+}
+function submitTx() {
+  const amount = parseMoney(F.amount), need = ['share', 'repay', 'loan'].includes(F.type);
+  if (need && !F.memberId) return toast('عضو را انتخاب کنید');
+  if (!amount) return toast('مبلغ را وارد کنید');
+  const dd = Math.min(+F.d, daysIn(+F.y, +F.m));
+  const t = { date: ymd(+F.y, +F.m, dd), type: F.type, amount, method: F.method, note: F.note.trim() };
+  if (F.memberId) t.memberId = +F.memberId;
+  if (F.type === 'share') { t.forYear = +F.forY; t.forMonth = +F.forM; }
+  if (F.type === 'repay') { const l = loanOf(F.loanNo); if (!l) return toast('وام فعالی برای این عضو نیست'); t.loanNo = l.no; t.instNo = F.editing && F.instNo ? F.instNo : l.paidCount + 1; }
+  if (F.type === 'loan') { const n = +en(F.installments); if (!(n > 0)) return toast('تعداد اقساط نامعتبر است'); t.loanNo = +F.loanNo; t.installments = n; }
+  if (!t.note) delete t.note;
+  const wasOnline = navigator.onLine, editing = F.editing;
+  editing ? S.store.updateTx(F.id, t) : S.store.addTx(t);
+  closeSheet();
+  toast(wasOnline ? (editing ? 'ویرایش شد' : 'ثبت شد ✓') : 'ثبت شد؛ پس از اتصال به اینترنت ارسال می‌شود ✓');
+}
+function openMember(id) {
+  const m = id ? S.c.M.get(+id) : { id: Math.max(0, ...S.c.members.map(x => x.id)) + 1, name: '', join: ymd(S.cur.y, S.cur.m, 1), status: 'فعال', coef: 1 };
+  openSheet(`<form id="mf" data-id="${m.id}" data-new="${id ? 0 : 1}"><h3>${id ? 'ویرایش عضو' : 'عضو جدید'} (کد ${fa(m.id)})</h3>
+  <label class="f"><span>نام و نام خانوادگی</span><input class="in" name="name" value="${esc(m.name)}" required></label>
+  <div class="r2"><label class="f"><span>تاریخ عضویت (۱۴۰۵/۰۱/۰۱)</span><input class="in ltr" name="join" value="${esc(m.join)}" inputmode="numeric" pattern="\\d{4}/\\d{2}/\\d{2}"></label>
+  <label class="f"><span>ضریب سهم</span><input class="in ltr" name="coef" value="${m.coef}" inputmode="decimal"></label></div>
+  <label class="f"><span>وضعیت</span><select class="in" name="status"><option ${m.status === 'فعال' ? 'selected' : ''}>فعال</option><option ${m.status === 'غیرفعال' ? 'selected' : ''}>غیرفعال</option></select></label>
+  <div class="btns"><button class="btn" style="flex:1" type="submit">ذخیره</button><button class="btn sec" type="button" data-act="close">انصراف</button></div></form>`);
+}
+function openCurMonth() {
+  const s = S.data.settings, ys = []; for (let y = s.startYear; y <= S.cur.y + 1; y++) ys.push(y);
+  openSheet(`<form id="cmf"><h3>ماه جاری صندوق</h3><p class="small muted">بدهی‌ها تا پایان این ماه حساب می‌شود. هر ماه که حساب‌ها را بستید آن را جلو ببرید.</p>
+  <div class="r2"><select class="in" name="curMonth">${MONTHS.map((n, i) => `<option value="${i + 1}" ${S.cur.m === i + 1 ? 'selected' : ''}>${n}</option>`).join('')}</select>
+  <select class="in" name="curYear">${ys.map(y => `<option value="${y}" ${S.cur.y === y ? 'selected' : ''}>${fa(y)}</option>`).join('')}</select></div>
+  <div class="btns" style="margin-top:14px"><button class="btn" style="flex:1" type="submit">ذخیره (دستی)</button><button class="btn sec" type="button" data-act="cur-auto">خودکار (امروز)</button></div></form>`);
+}
+
+/* ---------- خروجی‌ها ---------- */
+function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+function exportCsv() {
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const rows = [['تاریخ', 'کد عضو', 'نام عضو', 'نوع', 'مبلغ', 'بابت ماه', 'بابت سال', 'شماره وام', 'شماره قسط', 'تعداد اقساط', 'روش', 'شرح']];
+  [...S.data.tx].sort((a, b) => a.date < b.date ? -1 : 1).forEach(t => rows.push([t.date, t.memberId || '', t.memberId ? mname(t.memberId) : '', TM[t.type].l, t.amount, t.forMonth ? MONTHS[t.forMonth - 1] : '', t.forYear || '', t.loanNo || '', t.instNo || '', t.installments || '', t.method || '', t.note || '']));
+  download('گردش-مالی.csv', '﻿' + rows.map(r => r.map(q).join(',')).join('\r\n'), 'text/csv');
+}
+const stamp = () => { const t = jalaliToday(); return `${t.jy}-${pad(t.jm)}-${pad(t.jd)}`; };
+
+/* ---------- رویدادها ---------- */
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const a = el.dataset.act, d = el.dataset;
+  if (a !== 'rep-debt') e.preventDefault?.();
+  switch (a) {
+    case 'back': history.length > 1 ? history.back() : (location.hash = '#/'); break;
+    case 'close': closeSheet(); break;
+    case 'tx-new': openTx({ type: d.type, member: d.member, loan: d.loan }); break;
+    case 'tx-edit': { const t = S.data.tx.find(x => x.id === d.id); if (t) openTx({ tx: t }); break; }
+    case 'tx-del': if (confirm('این تراکنش حذف شود؟')) { S.store.deleteTx(F.id); closeSheet(); toast('حذف شد'); } break;
+    case 'seg-type': F.type = d.v; F.touched = F.editing && F.touched; defaults(); $('#f-dyn').innerHTML = txDyn(); $('#f-info').innerHTML = txInfo();
+      $('[data-f=amount]').value = group(parseMoney(F.amount)); document.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b.dataset.v === F.type)); break;
+    case 'member-new': openMember(); break;
+    case 'member-edit': openMember(d.id); break;
+    case 'cur-month': openCurMonth(); break;
+    case 'cur-auto': S.store.saveSettings({ curMode: 'auto' }); closeSheet(); toast('ماه جاری خودکار شد'); break;
+    case 'mf': S.mf = d.v; render(); break;
+    case 'more': S.lf.n += 60; render(); break;
+    case 'rep': S.rep = d.v; render(); break;
+    case 'rep-debt': S.rep = 'debt'; break;
+    case 'toggle-loan': { const n = +d.no; S.open.has(n) ? S.open.delete(n) : S.open.add(n); render(); break; }
+    case 'print': window.print(); break;
+    case 'copy-debt': {
+      const L = debtList(), txt = `فهرست بدهکاران ${S.data.settings.fundName} تا ${mName0(S.cur)}\n` + L.map(m => `• ${m.name}: ${num(m.debt + m.overdueAmt)} ${S.data.settings.currency}`).join('\n');
+      try { await navigator.clipboard.writeText(txt); toast('کپی شد'); } catch { prompt('کپی کنید:', txt); } break; }
+    case 'export-csv': exportCsv(); break;
+    case 'export-json': download(`پشتیبان-صندوق-${stamp()}.json`, JSON.stringify(S.store.exportAll(), null, 1), 'application/json'); toast('پشتیبان دریافت شد'); break;
+    case 'reset': if (confirm('همه‌ی داده‌های آزمایشی پاک و داده‌های اولیه‌ی اکسل بازگردانی شود؟')) { await S.store.seedInitial(); toast('بازنشانی شد'); } break;
+    case 'seed': el.disabled = true; el.textContent = 'در حال بارگذاری…';
+      try { await S.store.seedInitial(); toast('داده‌های اولیه بارگذاری شد ✓'); } catch (er) { toast('خطا: ' + er.message); el.disabled = false; } break;
+    case 'logout': await S.store.logout(); toast('خارج شدید'); break;
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.sel) { S[t.dataset.sel] = +t.value; render(); return; }
+  if (t.dataset.lf) { S.lf[t.dataset.lf] = t.value; S.lf.n = 60; render(); return; }
+  if (t.id === 'restore') { restore(t.files[0]); return; }
+  if (F && t.dataset.f) {
+    const k = t.dataset.f; F[k] = ['forY', 'forM', 'y', 'm', 'd'].includes(k) ? +t.value : t.value;
+    if (['memberId', 'loanNo', 'forY', 'forM'].includes(k) || k === 'y' || k === 'm') {
+      if (k === 'memberId') { F.touched = F.editing && F.touched; }
+      if (k === 'loanNo' && !F.editing) F.touched = false;
+      defaults(); $('#f-dyn').innerHTML = txDyn(); $('[data-f=amount]').value = group(parseMoney(F.amount));
+    }
+    $('#f-info').innerHTML = txInfo();
+  }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'mq') { S.q = t.value; $('#plist').innerHTML = memberRows(); return; }
+  if (t.id === 'lq') { S.lf.q = t.value; S.lf.n = 60; const list = filteredTx(); $('#llist').innerHTML = list.length ? txRows(list.slice(0, S.lf.n)) : '<div class="empty">تراکنشی پیدا نشد</div>'; return; }
+  if (t.classList.contains('money')) { const v = parseMoney(t.value); t.value = group(v); }
+  if (F && t.dataset.f) { F[t.dataset.f] = t.value; if (t.dataset.f === 'amount') F.touched = true; $('#f-info').innerHTML = txInfo(); }
+});
+document.addEventListener('submit', async e => {
+  e.preventDefault(); const f = e.target;
+  if (f.id === 'txf') submitTx();
+  else if (f.id === 'mf') {
+    const v = Object.fromEntries(new FormData(f)), join = en(v.join || '');
+    if (!v.name.trim()) return toast('نام را وارد کنید');
+    if (!/^\d{4}\/\d{2}\/\d{2}$/.test(join)) return toast('تاریخ عضویت را به شکل ۱۴۰۵/۰۱/۰۱ بنویسید');
+    S.store.saveMember({ id: +f.dataset.id, name: v.name.trim().replace(/\s+/g, ' '), join, status: v.status, coef: +en(v.coef) || 1 });
+    closeSheet(); toast('ذخیره شد ✓');
+  } else if (f.id === 'cmf') {
+    const v = Object.fromEntries(new FormData(f)); S.store.saveSettings({ curMode: 'manual', curYear: +v.curYear, curMonth: +v.curMonth }); closeSheet(); toast('ماه جاری تغییر کرد');
+  } else if (f.id === 'setf') {
+    const v = Object.fromEntries(new FormData(f));
+    S.store.saveSettings({ fundName: v.fundName.trim(), manager: v.manager.trim(), currency: v.currency.trim() || 'تومان', card: en(v.card).trim(), baseShare: parseMoney(v.baseShare), startBalance: parseMoney(v.startBalance),
+      defaultLoan: parseMoney(v.defaultLoan), defaultInstallments: +en(v.defaultInstallments) || 25, startYear: +v.startYear, startMonth: +v.startMonth, curMode: v.curMode, curYear: +v.curYear, curMonth: +v.curMonth });
+    toast('تنظیمات ذخیره شد ✓');
+  } else if (f.id === 'loginf') {
+    const v = Object.fromEntries(new FormData(f)), er = $('#lerr'); er.hidden = true;
+    try { await S.store.login(v.email.trim(), v.pw); location.hash = '#/'; toast('خوش آمدید'); }
+    catch (x) { er.hidden = false; er.textContent = /network/.test(x.code || '') ? 'اتصال اینترنت برقرار نیست.' : 'ایمیل یا گذرواژه اشتباه است.'; }
+  }
+});
+async function restore(file) {
+  if (!file) return;
+  try {
+    const d = JSON.parse(await file.text());
+    if (!d.settings || !Array.isArray(d.members) || !Array.isArray(d.tx)) throw new Error('فایل پشتیبان معتبر نیست');
+    if (!confirm(`بازیابی ${d.members.length} عضو و ${d.tx.length} تراکنش؟ (موارد هم‌شناسه جایگزین می‌شوند)`)) return;
+    await S.store.importAll(d); toast('بازیابی شد ✓');
+  } catch (er) { toast('خطا: ' + er.message); }
+}
+
+/* ---------- شروع ---------- */
+(async function boot() {
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  try { S.store = await createStore(); }
+  catch (er) { S.fatal = navigator.onLine ? 'اتصال به Firebase برقرار نشد: ' + er.message : 'برای اولین بار باید به اینترنت وصل باشید تا برنامه روی گوشی ذخیره شود.'; render(); return; }
+  S.store.subscribe(d => { S.data = d; recompute(); render(); });
+  S.store.onAuth(a => { S.auth = a; S.admin = !!a.admin; render(); });
+  S.store.onError?.(er => toast(er.code === 'permission-denied' ? 'اجازه‌ی ثبت ندارید؛ با حساب مدیر وارد شوید.' : 'خطا: ' + (er.message || er.code), 4500));
+  addEventListener('hashchange', () => { closeSheet(); render(); });
+  addEventListener('online', render); addEventListener('offline', render);
+  window.__S = S;
+})();
+
+</script>
+</body>
+</html>
